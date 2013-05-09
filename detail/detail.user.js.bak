@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name        detail
+// @namespace   detail.setup
+// @include     http://detail.daily.tmall.net/item.htm*
+// @version     1
+// ==/UserScript==
+(function(){
+	alert("success");
+	})()
