@@ -27,6 +27,7 @@ function matchNode(xpath, context) {
 document.onreadystatechange = function(){
 
 	if (document.readyState == "complete") {
+		
 		var ks = win.KISSY, T;
 		T = win.TShop;
 		var config = T._TMD_Config;
@@ -64,7 +65,7 @@ document.onreadystatechange = function(){
 		
 	// 搭配宝优惠
 	if(config.isTmallComboSupport && mealList == 0){
-		alert("搭配宝优惠未展示！！！");
+		winAlert("搭配宝优惠未展示！！！");
 	}
 
 // http请求验证 
@@ -121,12 +122,12 @@ var Extension = new ks.IO({
                     var shop = matchNode('//div[@id = "J_Shoppromotions"]').snapshotLength;
                     var act = matchNode('//div[@id= "J_Activity"]').snapshotLength;
                     if ( act == 1 || shop == 0) return;
-                    alert("有店铺级优惠未展示！！！！！！")          	
+                    winAlert("有店铺级优惠未展示！！！！！！")          	
                 }
                 // 搭配套餐优惠
 				var mealResult = matchNode('//div[@id = "J_ComboData"]').snapshotLength;
                 if (tuan.mealResult && mealResult == 0) {
-                	alert("套餐优惠未展示！！！");
+                	winAlert("套餐优惠未展示！！！");
                 };
                 
             }
@@ -142,15 +143,16 @@ var wanrentuan = new ks.IO({
                     // 万人团不支持taobao交易
                     var tradeType = config.tradeType;
                     if (tradeType !== 2){
-                        alert('\u4E07\u4EBA\u56E2\u4E0D\u652F\u6301taobaoBuy!!')
+                        winAlert('\u4E07\u4EBA\u56E2\u4E0D\u652F\u6301taobaoBuy!!')
                     }
+                    
                 }
                 // 优惠对象,针对无sku的商品
                 if(tuan.defaultModel.itemPriceResultDO.priceInfo.def.promotionList){
                 	var promotions = matchNode('//div[@id = "J_PromoBox"]')
                 	if (!tuan.defaultModel.itemPriceResultDO.wanrentuanInfo && promotions.snapshotItem(0).innerHTML == "" ) {
                 			console.info(tuan.defaultModel.itemPriceResultDO.priceInfo.def.promotionList)
-                			alert("接口有优惠但没展示！！");
+                			winAlert("接口有优惠但没展示！！");
                 		
                 	};
                 }
@@ -207,46 +209,46 @@ var down = function(){
 		if (price == 0) {
 			// 处理拍卖
 			if(T.isBid()) console.info("detail脚本执行结束（拍卖）");return;
-			alert('\u4EF7\u683C\u5C55\u793A\u4E3A\u7A7A!!');
+			winAlert('\u4EF7\u683C\u5C55\u793A\u4E3A\u7A7A!!');
 		}else if (!down && _service == 0 ) {
 			// if(_service == 0){
-				alert('\u670D\u52A1\u627F\u8BFA\u5C55\u793A\u533A\u7F3A\u5931!!');
+				winAlert('\u670D\u52A1\u627F\u8BFA\u5C55\u793A\u533A\u7F3A\u5931!!');
 		}
 
 
 		if (!down && dit == 0) {
-			alert('\u4E3E\u62A5\u7F16\u8F91\u5B9D\u8D1D\u8D85\u94FE\u63A5\u4E0D\u5B58\u5728!!');
+			winAlert('\u4E3E\u62A5\u7F16\u8F91\u5B9D\u8D1D\u8D85\u94FE\u63A5\u4E0D\u5B58\u5728!!');
 		}
 
 		if (!down && _sold == 0 ) {
-			alert('\u6708\u9500\u91CF\u5C55\u793A\u533A\u7F3A\u5931!!');
+			winAlert('\u6708\u9500\u91CF\u5C55\u793A\u533A\u7F3A\u5931!!');
 		}
 
 		if (!down && rate == 0) {
-			alert('\u7D2F\u8BA1\u8BC4\u4EF7\u951A\u70B9\u7F3A\u5931!!');
+			winAlert('\u7D2F\u8BA1\u8BC4\u4EF7\u951A\u70B9\u7F3A\u5931!!');
 		}
 		
 		if (favorite == 0) {
-			alert('\u7231\u5206\u4EAB\u6536\u85CF\u533A\u57DF\u7F3A\u5931!!');
+			winAlert('\u7231\u5206\u4EAB\u6536\u85CF\u533A\u57DF\u7F3A\u5931!!');
 		}
 		// if (Dianbaobao > 0){
-		// alert('\u7535\u4FDD\u5305banner');
+		// winAlert('\u7535\u4FDD\u5305banner');
 		// }
 		
 		if(config.isHouseholdService){
 			if (house == 0) {
-				alert('\u914D\u9001\u533A\u57DF\u63A7\u4EF6\u7F3A\u5931!!');
+				winAlert('\u914D\u9001\u533A\u57DF\u63A7\u4EF6\u7F3A\u5931!!');
 			}
 			console.info("detail脚本执行结束（家装）");
 			return;
 		}else if(!down && postAge == 0){
-			alert('\u914D\u9001\u533A\u57DF\u63A7\u4EF6\u7F3A\u5931!!')
+			winAlert('\u914D\u9001\u533A\u57DF\u63A7\u4EF6\u7F3A\u5931!!')
 		}
 		// 车型导购项目
 	if(config.skuCascadeMapString){
 		var carModel = matchNode('//ul[@class = "tb-clearfix J_TSaleProp tb-carmodel"]').snapshotLength;
 		if(carModel == 0){
-			alert("车型宝贝无多级菜单")
+			winAlert("车型宝贝无多级菜单")
 		}
 	}
 console.info("detail脚本执行结束")
@@ -265,9 +267,9 @@ console.info("detail脚本执行结束")
 //	
 // // console.info(APIscript.snapshotItem[0].innerHTML);
 // if (script.length) {
-// alert("true");
+// winAlert("true");
 // } else {
-// alert("false");
+// winAlert("false");
 // }
 // }, true);
 
@@ -281,36 +283,19 @@ console.info("detail脚本执行结束")
 	// for ( var i = 0; i < aa; i++) {
 	// 	thisDiv = allSrc.snapshotItem(i);
 	// 	if(thisDiv == ""){
-	// 		alert("src为空："+thisDiv);
+	// 		winAlert("src为空："+thisDiv);
 	// 	}
 	// 	console.info(thisDiv);
 	// }
 
 // }
 // testLinks();
-function annotation(message){
-	var div1 = document.createElement('div')
-	div1.className = "anno";
-	var div2 = document.createElement('div')
-	var a = document.createElement('a')
-	a.onclick = close;
-	a.innerHTML = "关闭";
-	div1.style.display = "block";
-	div1.style.background = "#E7F1E0";
-	div1.style.height = "20%";
-	div1.style.width = "203px";
-	div1.style.left = "35%";
-	div1.style.top = "22px";
-	div1.style.position = "absolute";
-	div2.style.width = "413px"; 
-	div1.style.zIndex = "99999";
-	div2.style.fontSize = "150%";
-	div2.style.marginLeft = "10%";IE6
-	div2.innerHTML = message;
-	div1.appendChild(a);
-	div1.appendChild(div2);
-	document.getElementById("J_ItemRates").appendChild(div1);	
-}
-var close = function(){
-	document.getElementById("J_ItemRates").style.display = "none";
+// 重写alert方法
+function winAlert(msg){
+	if (typeof jAlert != "undefined")
+	{
+		win.jAlert(msg,"警告！");
+	}else{
+		alert(msg);
+	}
 }

@@ -9,6 +9,7 @@
 //   alert("GM_xmlhttpRequest is not defined.")
 //   return;
 // }
+
 var win = unsafeWindow || window;
 var  actual_host = "http://detail1.pre.tmall.com/item.htm"+ win.location.search;
 
@@ -56,7 +57,6 @@ while(treeWalker_second.nextNode()) nodeList_second.push(treeWalker_second.curre
 
 for(var i = 0;i <= nodeList_first.length - 1;i++){
   for (var j in nodeList_second) {
-
       // 两DOM对象中id相同的进行比较
       if( nodeList_first[i].id !== "" && nodeList_first[i].id == nodeList_second[j].id ){
         // 节点都有子节点
@@ -97,7 +97,7 @@ for(var i = 0;i <= nodeList_first.length - 1;i++){
             console.info("purple",nodeList_first[i],nodeList_second[j]);
             nodeList_first[i].setAttribute('title',"当前："+nodeList_first[i].outerHTML+"\n预期："+nodeList_second[j].outerHTML)
             nodeList_first[i].setAttribute('style','background:purple')
-
+            
             delete nodeList_second[j];
             break;
           }
@@ -113,6 +113,7 @@ for(var i = 0;i <= nodeList_first.length - 1;i++){
             console.info("purple",nodeList_first[i],nodeList_second[j]);
             nodeList_first[i].setAttribute('title',"当前："+nodeList_first[i].outerHTML+"\n预期："+nodeList_second[j].outerHTML)
             nodeList_first[i].setAttribute('style','background:purple')
+            
             delete nodeList_second[j];
             break;
           }
@@ -132,12 +133,14 @@ for(var i = 0;i <= nodeList_first.length - 1;i++){
       }
       // 扩展到class属性相同进行比较
       else if( nodeList_first[i].className !== "" && nodeList_first[i].className == nodeList_second[j].className
-        && checkPosition(nodeList_first[i],nodeList_second[j]) && nodeList_first[i].tagName == nodeList_second[j].tagName)
+        && !checkPosition(nodeList_first[i],nodeList_second[j]) && nodeList_first[i].tagName == nodeList_second[j].tagName)
       {
+
         // 节点都有子节点
         if(nodeList_first[i].childElementCount>0 && nodeList_second[j].childElementCount>0){
           // 节点下有text文本，要比较
-          if (nodeList_first[i].text && nodeList_second[j].text ) {
+          
+          if (nodeList_first[i].text && nodeList_second[j].text && nodeList_first[i].childElementCount !==1) {
             if (nodeList_first[i].text !== nodeList_second[j].text) {
               console.info("green",i,nodeList_first[i],j,nodeList_second[j]);
               nodeList_first[i].setAttribute('title',"当前："+nodeList_first[i].text+"\n预期："+nodeList_second[j].text);
@@ -168,13 +171,14 @@ for(var i = 0;i <= nodeList_first.length - 1;i++){
             delete nodeList_second[j];
             break;
           }
-          // 节点下只有1个子节点时，还需要对比下outerHtml
+          // 节点下只有1个子节点且没有text属性时，还需要对比下outerHtml
           else if (nodeList_first[i].childElementCount ==1 && nodeList_second[j].childElementCount ==1 
             && nodeList_first[i].children.item(0).childElementCount + nodeList_second[j].children.item(0).childElementCount ==0) 
           {
  
           if(nodeList_first[i].outerHTML !== nodeList_second[j].outerHTML){
             console.info("purple",nodeList_first[i],nodeList_second[j]);
+            setTips(nodeList_first[i])
             nodeList_first[i].setAttribute('title',"当前："+nodeList_first[i].outerHTML+"\n预期："+nodeList_second[j].outerHTML);
             nodeList_first[i].setAttribute('style','background:purple');
             delete nodeList_second[j];
@@ -186,9 +190,11 @@ for(var i = 0;i <= nodeList_first.length - 1;i++){
         }
         }
         // 该节点都没有子节点
-        else if (nodeList_first[i].childElementCount + nodeList_second[j].childElementCount ==0 ) {
+        else if (nodeList_first[i].childElementCount + nodeList_second[j].childElementCount ==0 
+          && nodeList_first[i].textContent == nodeList_second[j].textContent) {
           if(nodeList_first[i].outerHTML !== nodeList_second[j].outerHTML){
             console.info("purple",nodeList_first[i],nodeList_second[j]);
+            setTips(nodeList_first[i])
             nodeList_first[i].setAttribute('title',"当前："+nodeList_first[i].outerHTML+"\n预期："+nodeList_second[j].outerHTML);
             nodeList_first[i].setAttribute('style','background:purple');
             delete nodeList_second[j];
@@ -199,7 +205,7 @@ for(var i = 0;i <= nodeList_first.length - 1;i++){
           break;
         }
         // 其中一个节点没有子节点
-        else if (nodeList_first[i].childElementCount + nodeList_second[j].childElementCount >0){
+        else if (nodeList_first[i].childElementCount + nodeList_second[j].childElementCount >0 && checkPosition(nodeList_first[i],nodeList_second[j])){
             console.info("orange",nodeList_first[i],nodeList_second[j]);
             nodeList_first[i].setAttribute('title',"当前："+nodeList_first[i].outerHTML+"\n预期："+nodeList_second[j].outerHTML);
             nodeList_first[i].setAttribute('style','background:orange');
@@ -288,3 +294,47 @@ function doStyle(node1,node2){
 // 对比逻辑
 // function doDiff(i,j){
 //     }
+
+
+
+// 设置气泡样式
+function setTips(node){
+    win.$(node).qtip({
+               content:"此处有不同。"+escape(node.outerHTML), // Set the tooltip content to the current corner
+                show: {
+                  when: false, // Don't specify a show event
+                  ready: true
+               },
+               hide: false, // Don't specify a hide event
+               style: {
+                  border: {
+                     width: 5,
+                     radius: 10
+                  },
+                  padding: 10, 
+                  textAlign: 'center',
+                  tip: true, // Give it a speech bubble tip with automatic corner detection
+                  name: 'blue'// Style it according to the preset 'cream' style
+               }
+            });
+
+}
+
+win.$('.qtip\\ qtip-cream\\ qtip-active').css("z-index","9999999");
+
+
+
+function escape(s) {
+    var n = s;
+    n = n.replace(/&/g, "&amp;");
+    n = n.replace(/</g, "&lt;");
+    n = n.replace(/>/g, "&gt;");
+    n = n.replace(/"/g, "&quot;");
+
+    return n;
+}
+
+
+
+
+
