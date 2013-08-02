@@ -20,7 +20,9 @@ function matchNode(xpath, context) {
 
 // 监听事件触发时执行
 var checkDetail = function(){
-
+	
+	
+	winAlert('已加载！');
 	// 关注公共变量window.* 如：window.g_config
 	var ks = win.KISSY,T;
 	T = win.TShop;
