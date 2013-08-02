@@ -11,7 +11,7 @@
 
 // 推荐使用unsafeWindow代替window
 
-var win = unsafeWindow || window;
+var win = window;
 function matchNode(xpath, context) {
 	return document.evaluate(context ? (xpath.indexOf('.') == 0 ? xpath : '.'
 			+ xpath) : xpath, context || document, null,
@@ -20,7 +20,7 @@ function matchNode(xpath, context) {
 
 // 监听事件触发时执行
 var checkDetail = function(){
-	
+	winAlert('已加载！');
 	// 关注公共变量window.* 如：window.g_config
 	var ks = win.KISSY,T;
 	T = win.TShop;
