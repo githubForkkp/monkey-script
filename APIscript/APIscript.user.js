@@ -1,17 +1,18 @@
 // ==UserScript==
 // @name        APIscript
 // @namespace   detail.setup
-// @description win.TShop._TMD_Config
+// @description win.TShop.cfg()
 // @include     http://detail1.pre.tmall.com/item.htm*
 // @include     http://detail2.pre.tmall.com/item.htm*
 // @include     http://detail.daily.tmall.net/item.htm*
 // @include     http://detail.tmall.com/item.htm*
+// @include 	http://detail.tmall.com/venus/spu_detail.htm*
 // @version     1
 // ==/UserScript==
 
 // 推荐使用unsafeWindow代替window
 
-var win = window;
+var win = unsafeWindow || window;
 function matchNode(xpath, context) {
 	return document.evaluate(context ? (xpath.indexOf('.') == 0 ? xpath : '.'
 			+ xpath) : xpath, context || document, null,
@@ -20,7 +21,8 @@ function matchNode(xpath, context) {
 
 // 监听事件触发时执行
 var checkDetail = function(){
-	winAlert('已加载！');
+	
+
 	// 关注公共变量window.* 如：window.g_config
 	var ks = win.KISSY,T;
 	T = win.TShop;
@@ -33,7 +35,7 @@ var checkDetail = function(){
 	// 吊顶用户名位置
 	var nickname = matchNode('//p[@id = "login-info"]/a/text()').snapshotItem(0);
 	// TMD_config
-	var config = T._TMD_Config;
+	var config = T.cfg();
 	// 若支持taobaoBuy，则不展示购物车(tradeType:1 集市交易；2天猫交易)
 	var tradeType = config.tradeType;
 	
@@ -83,11 +85,27 @@ var checkDetail = function(){
 		txt+="URL: " + url + "\n"
 		txt+="行：" + l + "\n\n"
 		txt+="点击“ok”继续。\n\n"
-		if (document.readyState == "complete") {
+		
 		winAlert(txt);
-		}
+		
 		//throw new Error("1111")
 	}	
+
+var wanren = new win.KISSY.IO({
+            url: win.TShop.cfg().initApi,
+            dataType: "jsonp",
+            success: function(d) {
+            	//tmall新店铺优惠需求
+            	tuan = d;
+				console.info(tuan.defaultModel.itemPriceResultDO.tmallShopProm);
+				var sw = win.TShop.cfg().initExtensionApi.substring(104,122)
+				if(sw.search("showShopProm") == -1){
+					var index = win.TShop.cfg().initExtensionApi.search("showShopProm");
+					sw = win.TShop.cfg().initExtensionApi.substring(index,index+18)
+				}
+				console.info("查是否请求老店铺优惠：",sw)
+            }
+        });
 	
 	// };
 //最后清除监听器
@@ -101,12 +119,21 @@ window.addEventListener('load', checkDetail , true);
 // var setValue = function(n,v){var gmv=GM_setValue(n,v);};
 // GM_deleteValue('tradeType')
 
+
 // 重写alert方法
 function winAlert(msg){
-	if (typeof jAlert != "undefined")
+	
+	if (typeof win.jAlert != "undefined")
 	{
 		win.jAlert(msg,"警告！");
 	}else{
 		alert(msg);
 	}
+	
 }
+
+
+var now = new Date("Jul 23,2013 09:14:10"); 
+
+console.log(now.getTime()) 
+
